@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #fb8db7;
+}
+
+#link {
+  background-color: pink;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+#link:hover {
+  background-color: #f380b9;
+  color: white;
+  cursor: pointer;
+  border: #fb8db7;
+  border-radius: 0.25rem;
+  font-size: larger;
+}

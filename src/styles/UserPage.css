@@ -1,0 +1,46 @@
+.btn-pinkUser {
+  background-color: #f8a0cc !important;
+  color: white !important;
+  border: none !important;
+  font-weight: bold !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-pinkUser.active,
+.btn-pinkUser:focus,
+.btn-pinkUser:hover {
+  background-color: #f74b90 !important;
+  color: white !important;
+}
+
+.counter-buttons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.counter-btn {
+  background-color: #f8a0cc;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.counter-btn:hover {
+  background-color: #eb337d;
+}
+
+.counter-value {
+  font-size: 1.5rem;
+  width: 50px;
+  text-align: center;
+  font-weight: bold;
+}

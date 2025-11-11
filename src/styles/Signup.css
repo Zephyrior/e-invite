@@ -1,0 +1,23 @@
+.btn-pink {
+  background-color: #ff66b2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: bold !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.btn-pink:hover {
+  background-color: #ff4d94 !important;
+  color: white !important;
+}
+
+.loginLink {
+  color: #fb8db7;
+  transition: all 0.3s ease;
+}
+
+.loginLink:hover {
+  cursor: pointer;
+  font-size: larger;
+}
