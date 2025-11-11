@@ -3,22 +3,38 @@ import "/src/styles/Header.css";
 import "/src/styles/Signup.css";
 import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ fullName, email, password, confirmPassword });
-    if (password !== confirmPassword) {
-      setError("Passwords do not match!");
+    setError("");
+    setLoading(true);
+    console.log({ email, password });
+
+    // Sign in with Supabase Auth
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      setError(authError.message);
+      setLoading(false);
       return;
     }
+
+    // Successful login
+    setLoading(false);
+    console.log("Logged in user:", data.user);
+    navigate("/rsvp"); // redirect to home or user dashboard
   };
   return (
     <>

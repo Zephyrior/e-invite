@@ -1,12 +1,16 @@
 import { Button, ButtonGroup, Container, Form, ToggleButton } from "react-bootstrap";
 import "/src/styles/Header.css";
 import "/src/styles/UserPage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
+  const navigate = useNavigate();
   const [response, setResponse] = useState("");
   const [numVisitor, setNumVisitor] = useState(1);
   const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const radios = [
     { name: "Yes", value: "Yes" },
@@ -27,13 +31,91 @@ const UserPage = () => {
   //   console.log("RSVP response:", e.target.value);
   // };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchRSVP = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const userId = session.user.id;
+
+      // Fetch the RSVP for this user
+      const { data, error } = await supabase.from("users").select("is_coming, num_visitors, notes").eq("id", userId).single();
+
+      if (error && error.code !== "PGRST116") {
+        // ignore "no rows found"
+        console.error("Error fetching RSVP:", error.message);
+        return;
+      }
+
+      if (data) {
+        setResponse(data.is_coming ? "Yes" : data.notes ? "Maybe" : "No");
+        setNumVisitor(data.num_visitors || 1);
+        setNotes(data.notes || "");
+      }
+    };
+
+    fetchRSVP();
+  }, []);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        // Session expired or user signed out
+        navigate("/"); // redirect to homepage or login
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (response === "No" || response === "Maybe") {
       setNumVisitor(0);
     }
-    alert(`You selected: ${response}
-        number of visitors: ${numVisitor}`);
+
+    // Get current session & user info
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      alert("You must be logged in to submit RSVP.");
+      setLoading(false);
+      return;
+    }
+    const userId = session.user.id;
+    const userEmail = session.user.email;
+    const userFullName = session.user.user_metadata?.full_name || "Unknown";
+
+    // Upsert RSVP
+    const { error } = await supabase
+      .from("users") // or your RSVP table
+      .upsert(
+        {
+          id: userId,
+          full_name: userFullName, // ✅ include required column
+          email: userEmail,
+          is_coming: response === "Yes",
+          num_visitors: response === "Yes" ? numVisitor : 0,
+          notes: response === "No" || response === "Maybe" ? notes : null,
+        },
+        { onConflict: ["id"] } // update if user already exists
+      );
+
+    if (error) {
+      alert("Error submitting RSVP: " + error.message);
+    } else {
+      alert("RSVP submitted successfully!");
+    }
+
+    setLoading(false);
   };
   return (
     <Container className="header">
