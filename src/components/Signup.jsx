@@ -5,6 +5,8 @@ import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
+const CREATE_USER_URL = "https://sbzqoertdmbssxudqlnk.functions.supabase.co/createUser"; // deployed Edge Function
+
 const Signup = () => {
   const navigate = useNavigate();
 
@@ -17,7 +19,8 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ fullName, email, password, confirmPassword });
+    setError("");
+
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -25,79 +28,85 @@ const Signup = () => {
 
     setLoading(true);
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-      },
-    });
+    try {
+      // 1️⃣ Sign up via Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName },
+        },
+      });
 
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
-      return;
-    }
+      if (authError) throw new Error(authError.message);
 
-    const { data, error: dbError } = await supabase.from("users").insert([
-      {
-        id: authData.user.id,
-        auth_id: authData.user.id,
-        full_name: fullName,
-        email: email,
-      },
-    ]);
+      if (!authData.user) throw new Error("User creation failed");
 
-    if (dbError) {
-      setError(dbError.message);
-      setLoading(false);
-      return;
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+
+      // 2️⃣ Insert user directly into `users` table
+      const { data, error: dbError } = await supabase.from("users").insert([
+        {
+          id: authData.user.id,
+          auth_id: authData.user.id,
+          full_name: fullName,
+          email: authData.user.email,
+        },
+      ]);
+
+      if (dbError) throw new Error(dbError.message);
+
+      alert("Registration successful! Please check your email to confirm.");
+      navigate("/login");
+    } catch (err) {
+      setError(err.message);
     }
 
     setLoading(false);
-    alert("Registration successful! Please check your email to confirm.");
-    navigate("/login");
   };
+
   return (
-    <>
-      <Container className="header">
-        <h1>Sign up</h1>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicName">
-            <Form.Label>Full Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>E-mail Address</Form.Label>
-            <Form.Control type="email" placeholder="Enter your e-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} maxLength={20} required />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
-          </Form.Group>
-          <Button type="submit" className="w-100 btn-pink">
-            Register
-          </Button>
-        </Form>
-        <p className="mt-3">
-          Already registered?{" "}
-          <a className="loginLink" style={{ textDecoration: "none", fontWeight: "bold" }} onClick={(e) => navigate("/login")}>
-            Login
-          </a>
-        </p>
-      </Container>
-    </>
+    <Container className="header">
+      <h1>Sign up</h1>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="formFullName">
+          <Form.Label>Full Name</Form.Label>
+          <Form.Control type="text" placeholder="Enter your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Label>E-mail Address</Form.Label>
+          <Form.Control type="email" placeholder="Enter your e-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} maxLength={20} required />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formConfirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+        </Form.Group>
+
+        {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
+
+        <Button type="submit" className="w-100 btn-pink" disabled={loading}>
+          {loading ? "Signing up..." : "Register"}
+        </Button>
+      </Form>
+
+      <p className="mt-3">
+        Already registered?{" "}
+        <a className="loginLink" style={{ textDecoration: "none", fontWeight: "bold" }} onClick={() => navigate("/login")}>
+          Login
+        </a>
+      </p>
+    </Container>
   );
 };
 
