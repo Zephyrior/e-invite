@@ -77,9 +77,11 @@ const Admin = ({ user }) => {
 
   return (
     <Container className="header my-4">
-      <h1>Admin Dashboard</h1>
+      <h1 style={{ textDecoration: "underline", fontWeight: "bolder", color: "#e32a5bff" }} className="mt-5">
+        Admin Dashboard
+      </h1>
       {Object.entries(grouped).map(([status, list]) => (
-        <div key={status} className="my-4">
+        <div key={status}>
           <h2>{status}</h2>
           {renderTable(list, status)}
         </div>

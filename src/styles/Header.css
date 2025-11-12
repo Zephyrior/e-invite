@@ -12,11 +12,13 @@
   font-family: "Pacifico", cursive;
   font-size: 2.5rem;
   color: #fb8db7;
+  text-shadow: 2px 2px 4px rgba(145, 3, 3, 0.3);
 }
 .header h2 {
   font-family: "Pacifico", cursive;
   color: #ff8fb0;
   font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(145, 3, 3, 0.3);
   margin: 0;
 }
 .header h3 {

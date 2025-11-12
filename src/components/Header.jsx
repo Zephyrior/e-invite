@@ -29,7 +29,7 @@ const Header = () => {
             <a id="link" className="p-1" style={{ fontWeight: "bold" }} onClick={() => navigate("/login")}>
               sign up/log in
             </a>{" "}
-            to <span style={{ fontWeight: "bold", fontFamily: "Pacifico, cursive" }}>RSVP</span>
+            to <span style={{ fontWeight: "bold", fontFamily: "Pacifico, cursive", textShadow: "2px 2px 4px rgba(200, 67, 67, 0.3)" }}>RSVP</span>
           </span>
           <br />
           Your reply is requested by
