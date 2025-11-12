@@ -14,7 +14,7 @@ const Header = () => {
         <h2>Temblique</h2>
         <p className="pt-5 text-center">
           {" "}
-          November 25th at 19.30
+          November 24th at 19.30
           <br />
           <a href="https://maps.app.goo.gl/mve2sif4e1GAXK3E7" style={{ color: " #da77aa" }}>
             Hokkaido Restaurant
