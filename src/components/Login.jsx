@@ -34,7 +34,7 @@ const Login = () => {
     // Successful login
     setLoading(false);
     console.log("Logged in user:", data.user);
-    navigate("/rsvp"); // redirect to home or user dashboard
+    navigate("/rsvp");
   };
   return (
     <>

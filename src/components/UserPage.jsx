@@ -44,7 +44,6 @@ const UserPage = () => {
       const { data, error } = await supabase.from("users").select("is_coming, num_visitors, notes").eq("id", userId).single();
 
       if (error && error.code !== "PGRST116") {
-        // ignore "no rows found"
         console.error("Error fetching RSVP:", error.message);
         return;
       }
@@ -64,8 +63,7 @@ const UserPage = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
-        // Session expired or user signed out
-        navigate("/"); // redirect to homepage or login
+        navigate("/");
       }
     });
 
@@ -95,19 +93,17 @@ const UserPage = () => {
     const userFullName = session.user.user_metadata?.full_name || "Unknown";
 
     // Upsert RSVP
-    const { error } = await supabase
-      .from("users") // or your RSVP table
-      .upsert(
-        {
-          id: userId,
-          full_name: userFullName, // ✅ include required column
-          email: userEmail,
-          is_coming: response === "Yes",
-          num_visitors: response === "Yes" ? numVisitor : 0,
-          notes: response === "No" || response === "Maybe" ? notes : null,
-        },
-        { onConflict: ["id"] } // update if user already exists
-      );
+    const { error } = await supabase.from("users").upsert(
+      {
+        id: userId,
+        full_name: userFullName,
+        email: userEmail,
+        is_coming: response === "Yes",
+        num_visitors: response === "Yes" ? numVisitor : 0,
+        notes: response === "No" || response === "Maybe" ? notes : null,
+      },
+      { onConflict: ["id"] }
+    );
 
     if (error) {
       alert("Error submitting RSVP: " + error.message);
