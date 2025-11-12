@@ -83,3 +83,10 @@ body {
   background-attachment: fixed;
   min-height: 100vh;
 }
+
+/* @media (min-width: 1200px) {
+  body {
+    background-size: auto;
+  }
+}
+ */

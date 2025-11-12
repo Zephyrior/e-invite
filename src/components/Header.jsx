@@ -16,7 +16,9 @@ const Header = () => {
           {" "}
           November 25th at 19.30
           <br />
-          Hokkaido Restaurant
+          <a href="https://maps.app.goo.gl/mve2sif4e1GAXK3E7" style={{ color: " #da77aa" }}>
+            Hokkaido Restaurant
+          </a>
           <br />
           Via del Castro Pretorio, 10/12
           <br />

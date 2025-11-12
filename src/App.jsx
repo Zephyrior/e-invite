@@ -16,7 +16,6 @@ function App() {
       const { data: authUser } = await supabase.auth.getUser(); // fetch auth info
       if (!authUser.user) return;
 
-      // fetch user row from your 'users' table
       const { data, error } = await supabase.from("users").select("*").eq("id", authUser.user.id).single();
 
       if (error) {
