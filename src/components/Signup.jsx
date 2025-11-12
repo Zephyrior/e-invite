@@ -28,6 +28,9 @@ const Signup = () => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: { full_name: fullName },
+      },
     });
 
     if (authError) {
@@ -39,6 +42,7 @@ const Signup = () => {
     const { data, error: dbError } = await supabase.from("users").insert([
       {
         id: authData.user.id,
+        auth_id: authData.user.id,
         full_name: fullName,
         email: email,
       },

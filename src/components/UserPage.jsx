@@ -79,39 +79,63 @@ const UserPage = () => {
       setNumVisitor(0);
     }
 
-    // Get current session & user info
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      alert("You must be logged in to submit RSVP.");
-      setLoading(false);
-      return;
-    }
-    const userId = session.user.id;
-    const userEmail = session.user.email;
-    const userFullName = session.user.user_metadata?.full_name || "Unknown";
+    try {
+      // Get current session & user info
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        alert("You must be logged in to submit RSVP.");
+        setLoading(false);
+        return;
+      }
 
-    // Upsert RSVP
-    const { error } = await supabase.from("users").upsert(
-      {
-        id: userId,
-        full_name: userFullName,
-        email: userEmail,
-        is_coming: response === "Yes",
-        num_visitors: response === "Yes" ? numVisitor : 0,
-        notes: response === "No" || response === "Maybe" ? notes : null,
-      },
-      { onConflict: ["id"] }
-    );
+      const userId = session.user.id;
+      const userEmail = session.user.email;
+      const userFullName = session.user.user_metadata?.full_name || "Unknown";
 
-    if (error) {
-      alert("Error submitting RSVP: " + error.message);
-    } else {
+      // Upsert RSVP
+      const { error: upsertError } = await supabase.from("users").upsert(
+        {
+          id: userId,
+          full_name: userFullName,
+          email: userEmail,
+          is_coming: response === "Yes",
+          num_visitors: response === "Yes" ? numVisitor : 0,
+          notes: response === "No" || response === "Maybe" ? notes : null,
+        },
+        { onConflict: ["id"] }
+      );
+
+      if (upsertError) {
+        alert("Error submitting RSVP: " + upsertError.message);
+        setLoading(false);
+        return;
+      }
+
       alert("RSVP submitted successfully!");
-    }
 
-    setLoading(false);
+      // --- Supabase Edge Function call using functions.invoke ---
+      const { data: funcData, error: funcError } = await supabase.functions.invoke("send-confirmation", {
+        body: {
+          fullName: userFullName,
+          email: userEmail,
+          response,
+          numVisitors: response === "Yes" ? numVisitor : 0,
+        },
+      });
+
+      if (funcError) {
+        console.error("Error sending confirmation email:", funcError);
+      } else {
+        console.log("Confirmation email sent!", funcData);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Container className="header">
@@ -154,7 +178,7 @@ const UserPage = () => {
 
           {response === "Yes" && (
             <div>
-              <h3>Number of visitors</h3>
+              <h3>Number of guests</h3>
               <div className="counter-buttons">
                 <button type="button" className="counter-btn btn-lg" onClick={decrement}>
                   -
