@@ -18,8 +18,8 @@ const Admin = ({ user }) => {
     fetchGuests();
   }, [user]);
 
-  if (!user) return <p>Loading...</p>;
-  if (user.role !== "admin") return <p>Access denied</p>;
+  if (!user) return <p className="text-center header fs-1">Loading...</p>;
+  if (user.role !== "admin") return <p className="text-center header fs-1">Access denied. :c</p>;
 
   const grouped = guests.reduce(
     (acc, guest) => {

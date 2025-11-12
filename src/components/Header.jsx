@@ -7,10 +7,10 @@ const Header = () => {
   return (
     <>
       <div className="header">
-        <h3>Join us for a</h3>
+        <h3 className="mt-5">Join us for a</h3>
         <h1>Graduation party</h1>
-        <p>of</p>
-        <h2>Carla Joanna</h2>
+        <p style={{ fontSize: "1rem" }}>of</p>
+        <h2 style={{ fontSize: "3rem" }}>Carla Joanna</h2>
         <h2>Temblique</h2>
         <p className="pt-5 text-center">
           {" "}
@@ -29,7 +29,7 @@ const Header = () => {
             <a id="link" className="p-1" style={{ fontWeight: "bold" }} onClick={() => navigate("/login")}>
               sign up/log in
             </a>{" "}
-            to RSVP
+            to <span style={{ fontWeight: "bold", fontFamily: "Pacifico, cursive" }}>RSVP</span>
           </span>
           <br />
           Your reply is requested by

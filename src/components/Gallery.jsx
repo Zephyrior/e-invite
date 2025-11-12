@@ -102,7 +102,7 @@ const Gallery = () => {
 
   return (
     <div className="gallery-container header">
-      <h2 className="gallery-title">Gallery</h2>
+      <h2 className="gallery-title mb-4">Gallery</h2>
 
       <div className="tabs">
         <button className={activeTab === "my" ? "active" : ""} onClick={() => setActiveTab("my")}>

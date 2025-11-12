@@ -5,6 +5,29 @@
   align-items: center;
   height: 95vh;
   color: #fb8db7;
+  font-family: "Poppins", sans-serif;
+}
+
+.header h1 {
+  font-family: "Pacifico", cursive;
+  font-size: 2.5rem;
+  color: #fb8db7;
+}
+.header h2 {
+  font-family: "Pacifico", cursive;
+  color: #ff8fb0;
+  font-size: 2.5rem;
+  margin: 0;
+}
+.header h3 {
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  color: #d87093;
+}
+.header p {
+  font-size: 0.8rem;
+  color: #da77aa;
 }
 
 #link {
