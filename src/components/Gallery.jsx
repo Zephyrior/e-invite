@@ -6,10 +6,13 @@ import { supabase } from "../supabaseClient";
 const BUCKET = "e_invite_gallery";
 
 const Gallery = () => {
-  const [activeTab, setActiveTab] = useState("my"); // "my" or "all"
-  const [images, setImages] = useState([]); // for current tab
+  const [activeTab, setActiveTab] = useState("my");
+  const [images, setImages] = useState([]);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const fetchImages = async (tab) => {
     const {
@@ -99,6 +102,16 @@ const Gallery = () => {
 
     fetchImages(activeTab);
   };
+  // Lightbox functions
+  const openViewer = (img) => {
+    setCurrentImage(img);
+    setViewerOpen(true);
+  };
+
+  const closeViewer = () => {
+    setViewerOpen(false);
+    setCurrentImage(null);
+  };
 
   return (
     <div className="gallery-container header">
@@ -130,7 +143,7 @@ const Gallery = () => {
       <div className="preview-grid">
         {images.map((img) => (
           <div key={img.id} className="preview-item">
-            <img src={img.signedUrl} alt="gallery" />
+            <img src={img.signedUrl} alt="gallery" onClick={() => openViewer(img)} style={{ cursor: "pointer" }} />
             {activeTab === "my" && (
               <button className="remove-btn" onClick={() => handleRemove(img)}>
                 ✕
@@ -139,6 +152,12 @@ const Gallery = () => {
           </div>
         ))}
       </div>
+      {/* Lightbox viewer */}
+      {viewerOpen && currentImage && (
+        <div className="lightbox" onClick={closeViewer}>
+          <img src={currentImage.signedUrl} alt="full view" />
+        </div>
+      )}
     </div>
   );
 };
