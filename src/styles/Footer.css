@@ -1,0 +1,11 @@
+.insta-link {
+  text-decoration: none;
+  font-weight: bold;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.insta-link:hover {
+  color: #fb8db7;
+  font-size: large;
+}

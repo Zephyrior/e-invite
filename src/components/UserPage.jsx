@@ -206,6 +206,14 @@ const UserPage = () => {
           </div>
         </div>
       </Form>
+
+      {response === "Yes" && (
+        <div className="mt-5">
+          <Button className="btn-sm btn-pinkUser" onClick={(e) => navigate("/gallery")}>
+            View event gallery
+          </Button>
+        </div>
+      )}
     </Container>
   );
 };
