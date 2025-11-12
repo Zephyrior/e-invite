@@ -49,7 +49,7 @@ const UserPage = () => {
       }
 
       if (data) {
-        setResponse(data.is_coming ? "Yes" : data.notes ? "Maybe" : "No");
+        setResponse(data.is_coming || "");
         setNumVisitor(data.num_visitors || 1);
         setNotes(data.notes || "");
       }
@@ -79,6 +79,10 @@ const UserPage = () => {
       setNumVisitor(0);
     }
 
+    if (!response) {
+      alert("Please select Yes, No, or Maybe before submitting.");
+      return;
+    }
     try {
       // Get current session & user info
       const {
@@ -100,7 +104,7 @@ const UserPage = () => {
           id: userId,
           full_name: userFullName,
           email: userEmail,
-          is_coming: response === "Yes",
+          is_coming: response,
           num_visitors: response === "Yes" ? numVisitor : 0,
           notes: response === "No" || response === "Maybe" ? notes : null,
         },
