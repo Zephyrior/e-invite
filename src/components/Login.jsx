@@ -47,7 +47,7 @@ const Login = () => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} maxLength={20} required />
+            <Form.Control type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} maxLength={20} required />
             {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
           </Form.Group>
           <Button type="submit" className="w-100 btn-pink">

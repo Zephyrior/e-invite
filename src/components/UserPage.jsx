@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-const UserPage = () => {
+const UserPage = ({ user }) => {
   const navigate = useNavigate();
   const [response, setResponse] = useState("");
   const [numVisitor, setNumVisitor] = useState(1);
@@ -215,6 +215,14 @@ const UserPage = () => {
         <div className="mt-5">
           <Button className="btn-sm btn-pinkUser" onClick={(e) => navigate("/gallery")}>
             View event gallery
+          </Button>
+        </div>
+      )}
+
+      {user?.role === "admin" && (
+        <div className="mt-5">
+          <Button className="btn-pinkUser" size="sm" onClick={() => navigate("/admin")}>
+            Admin Dashboard
           </Button>
         </div>
       )}

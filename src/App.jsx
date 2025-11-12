@@ -54,7 +54,7 @@ function App() {
           <Route path="/" element={<Header />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/rsvp" element={<UserPage />} />
+          <Route path="/rsvp" element={<UserPage user={dbUser} />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/admin" element={<Admin user={dbUser} />} />
         </Routes>
