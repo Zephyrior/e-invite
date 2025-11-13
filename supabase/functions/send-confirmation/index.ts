@@ -1,14 +1,16 @@
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 
 serve(async (req) => {
-  // Handle preflight request
+  const ALLOWED_ORIGINS = ["http://localhost:5173", "https://rsvpproject.netlify.app"];
 
-  const FRONTEND_URL = "http://localhost:5173";
+  const origin = req.headers.get("origin") || "";
+
+  /* const FRONTEND_URL = "http://localhost:5173"; */
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
       headers: {
-        "Access-Control-Allow-Origin": FRONTEND_URL,
+        "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : "",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, x-client-info, apikey",
       },
