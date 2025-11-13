@@ -67,7 +67,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Access-Control-Allow-Origin": FRONTEND_URL }, // ✅ add CORS header here too
+      headers: { "Access-Control-Allow-Origin": ALLOWED_ORIGINS }, // ✅ add CORS header here too
     });
   } catch (err) {
     console.error(err);
