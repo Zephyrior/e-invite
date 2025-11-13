@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 
 serve(async (req) => {
-  const ALLOWED_ORIGINS = ["http://localhost:5173", "https://rsvpproject.netlify.app"];
+  const ALLOWED_ORIGINS = ["http://localhost:5173", "https://rsvpproject.netlify.app", "https://rsvp.us.kg"];
 
   const origin = req.headers.get("origin") || "";
 
