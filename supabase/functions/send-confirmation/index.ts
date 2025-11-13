@@ -4,13 +4,14 @@ serve(async (req) => {
   const ALLOWED_ORIGINS = ["http://localhost:5173", "https://rsvpproject.netlify.app", "https://rsvp.us.kg"];
 
   const origin = req.headers.get("origin") || "";
+  const allowOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
 
   /* const FRONTEND_URL = "http://localhost:5173"; */
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
       headers: {
-        "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : "",
+        "Access-Control-Allow-Origin": allowOrigin,
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, x-client-info, apikey",
       },
@@ -18,13 +19,17 @@ serve(async (req) => {
   }
 
   try {
-    if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
-
+    if (req.method !== "POST") {
+      return new Response("Method not allowed", {
+        status: 405,
+        headers: { "Access-Control-Allow-Origin": allowOrigin },
+      });
+    }
     const body = await req.json();
     const { fullName, email, response, numVisitors, notes } = body;
 
     const SENDGRID_KEY = Deno.env.get("SENDGRID_API_KEY");
-    const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "noreply@yourdomain.com";
+    const FROM_EMAIL = Deno.env.get("noreply@rsvp.us.kg") || "noreply@yourdomain.com";
 
     const emailBody =
       response === "Yes"
@@ -67,7 +72,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Access-Control-Allow-Origin": ALLOWED_ORIGINS }, // ✅ add CORS header here too
+      headers: { "Access-Control-Allow-Origin": allowOrigin }, // ✅ add CORS header here too
     });
   } catch (err) {
     console.error(err);
