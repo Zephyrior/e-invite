@@ -29,7 +29,7 @@ serve(async (req) => {
     const { fullName, email, response, numVisitors, notes } = body;
 
     const SENDGRID_KEY = Deno.env.get("SENDGRID_API_KEY");
-    const FROM_EMAIL = Deno.env.get("noreply@rsvp.us.kg") || "noreply@yourdomain.com";
+    const FROM_EMAIL = Deno.env.get("noreply@rsvp.us.kg") || "project.email.service0@gmail.com";
 
     const emailBody =
       response === "Yes"
